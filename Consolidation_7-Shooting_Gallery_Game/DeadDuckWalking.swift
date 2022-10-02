@@ -11,25 +11,37 @@ import UIKit
 class DeadDuckWalking: SKNode {
     var stickNode: SKSpriteNode!
     var duckNode: SKSpriteNode!
+    //var gameTimer: Timer?
+    
+    let ducks = ["duck-chick", "duck-young", "duck"]
     
     var isVisible = false
     var isShot = false
+    var isGameOver = false
     
     var rowNumber = 0
+    var timeInterval = 10.0
+    var appearTime = 5.0
     
-    func configure(row rowNumber: Int, at position: CGPoint) {
+    @objc func createDucks(row rowNumber: Int, at position: CGPoint) {
+        if isGameOver { return }
+        
+        guard let duck = ducks.randomElement() else { return }
+        
         self.position = position
         
         stickNode = SKSpriteNode(imageNamed: "stick")
         stickNode.zPosition = 1
-        if rowNumber == 2 {
+        if rowNumber == 1 {
+            stickNode.position = CGPoint(x: 0, y: 28)
+        } else if rowNumber == 2 {
             stickNode.position = CGPoint(x: 1024, y: 28)
-        } else {
+        } else if rowNumber == 3 {
             stickNode.position = CGPoint(x: 0, y: 28)
         }
         addChild(stickNode)
         
-        duckNode = SKSpriteNode(imageNamed: "duck")
+        duckNode = SKSpriteNode(imageNamed: duck)
         duckNode.zPosition = 2
         if rowNumber == 1 {
             duckNode.position = CGPoint(x: 0, y: 145)
@@ -62,6 +74,17 @@ class DeadDuckWalking: SKNode {
         duckNode.physicsBody?.angularVelocity = 0
         duckNode.physicsBody?.linearDamping = 0
         duckNode.physicsBody?.angularDamping = 0
+        
+        scale(row: rowNumber)
+        //hide(at: position)
+        
+        let minDelay = appearTime / 2.0
+        let maxDelay = appearTime * 2
+        let delay = Double.random(in: minDelay...maxDelay)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [ weak self ] in
+            self?.createDucks(row: rowNumber, at: position)
+        }
     }
     
     func scale(row rowNumber: Int) {
@@ -79,7 +102,7 @@ class DeadDuckWalking: SKNode {
         }
     }
     
-    func show() {
+    /*func show() {
         if isVisible { return }
         
         if rowNumber == 2 {
@@ -108,15 +131,25 @@ class DeadDuckWalking: SKNode {
             [weak self] in
             self?.hide()
         }
-    }
+    }*/
     
-    func hide() {
+    /* func hide(at position: CGPoint) {
         if !isVisible { return }
         
-        if duckNode.position == CGPoint(x: 0, y: 1024) {
-            isVisible = false
+        if rowNumber == 2 {
+            if duckNode.position == CGPoint(x: 0, y: 115) {
+                isVisible = false
+                duckNode.removeFromParent()
+                stickNode.removeFromParent()
+            }
+        } else {
+            if duckNode.position == CGPoint(x: 1024, y: 145) || duckNode.position == CGPoint(x: 1024, y: 85) {
+                isVisible = false
+                duckNode.removeFromParent()
+                stickNode.removeFromParent()
+            }
         }
-    }
+    } */
     
     func shot() {
         isShot = true

@@ -8,18 +8,18 @@
 import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    var miles = [DeadDuckWalking]()
-    var appearTime = 0.85
-    var numberOfBullets = 6
     var scoreLabel: SKLabelNode!
+    var gameOverLabel: SKLabelNode!
+    var restartLabel: SKLabelNode!
+    //var gameTimer: Timer?
+    var miles = [DeadDuckWalking]()
     var score = 0 {
         didSet {
             scoreLabel.text = "Score: \(score)"
         }
     }
-    var gameTime: Timer?
-    var gameOverLabel: SKLabelNode!
-    var restartLabel: SKLabelNode!
+    var numberOfBullets = 6
+    var timeInterval = 1.0
     
     override func didMove(to view: SKView) {
         backgroundColor = .white
@@ -63,11 +63,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         physicsWorld.contactDelegate = self
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self ] in
-            self?.letDucksLoose(row: 1, at: CGPoint(x: 0, y: 0))
-            self?.letDucksLoose(row: 2, at: CGPoint(x: 0, y: 200))
-            self?.letDucksLoose(row: 3, at: CGPoint(x: 0, y: 400))
-        }
+        //DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self ] in
+        letDucksLoose(row: 1, at: CGPoint(x: 0, y: 0))
+        letDucksLoose(row: 2, at: CGPoint(x: 0, y: 200))
+        letDucksLoose(row: 3, at: CGPoint(x: 0, y: 400))
+        //}
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -79,32 +79,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        
+        for node in children {
+            if node.position.x < 0 || node.position.x > 1024 {
+                node.removeFromParent()
+            }
+        }
     }
     
     func letDucksLoose(row rowNumber: Int, at position: CGPoint) {
         let mile = DeadDuckWalking()
         
-        mile.configure(row: rowNumber, at: position)
-        mile.scale(row: rowNumber)
+        mile.createDucks(row: rowNumber, at: position)
         addChild(mile)
         miles.append(mile)
-    }
-    
-    func createDucks() {
-        miles.shuffle()
-        miles[0].show()
-        
-        if Int.random(in: 0...2) == 0 { miles[1].show() }
-        if Int.random(in: 0...2) == 1 { miles[2].show() }
-        if Int.random(in: 0...2) == 2 { miles[3].show() }
-        
-        let minDelay = appearTime / 2.0
-        let maxDelay = appearTime * 2
-        let delay = Double.random(in: minDelay...maxDelay)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [ weak self ] in
-            self?.createDucks()
-        }
     }
 }
