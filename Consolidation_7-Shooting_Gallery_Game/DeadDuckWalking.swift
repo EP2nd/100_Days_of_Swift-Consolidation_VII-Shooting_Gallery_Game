@@ -11,14 +11,5 @@ import UIKit
 class DeadDuckWalking: SKNode {
     var duckNode: SKSpriteNode!
     
-    var isShot = false
     
-    func shot() {
-        isShot = true
-        
-        let delay = SKAction.wait(forDuration: 0.25)
-        let fadeOut = SKAction.fadeOut(withDuration: 0.5)
-        
-        duckNode.run(SKAction.sequence([delay, fadeOut]))
-    }
 }
