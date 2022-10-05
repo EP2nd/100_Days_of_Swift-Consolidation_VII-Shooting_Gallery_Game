@@ -17,7 +17,6 @@
 		B8160BC928E728EF00D9CF9D /* empty.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8160BC628E728EF00D9CF9D /* empty.wav */; };
 		B8160BCA28E728EF00D9CF9D /* shot.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8160BC728E728EF00D9CF9D /* shot.wav */; };
 		B8160BCB28E728EF00D9CF9D /* reload.wav in Resources */ = {isa = PBXBuildFile; fileRef = B8160BC828E728EF00D9CF9D /* reload.wav */; };
-		B8160BCD28E7290D00D9CF9D /* DeadDuckWalking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8160BCC28E7290D00D9CF9D /* DeadDuckWalking.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,7 +31,6 @@
 		B8160BC628E728EF00D9CF9D /* empty.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = empty.wav; sourceTree = "<group>"; };
 		B8160BC728E728EF00D9CF9D /* shot.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shot.wav; sourceTree = "<group>"; };
 		B8160BC828E728EF00D9CF9D /* reload.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = reload.wav; sourceTree = "<group>"; };
-		B8160BCC28E7290D00D9CF9D /* DeadDuckWalking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeadDuckWalking.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +66,6 @@
 				B8160BAD28E7242600D9CF9D /* AppDelegate.swift */,
 				B8160BAF28E7242600D9CF9D /* GameScene.sks */,
 				B8160BB328E7242600D9CF9D /* GameScene.swift */,
-				B8160BCC28E7290D00D9CF9D /* DeadDuckWalking.swift */,
 				B8160BB528E7242600D9CF9D /* GameViewController.swift */,
 				B8160BB728E7242600D9CF9D /* Main.storyboard */,
 				B8160BBA28E7242800D9CF9D /* Assets.xcassets */,
@@ -157,7 +154,6 @@
 			files = (
 				B8160BB428E7242600D9CF9D /* GameScene.swift in Sources */,
 				B8160BB628E7242600D9CF9D /* GameViewController.swift in Sources */,
-				B8160BCD28E7290D00D9CF9D /* DeadDuckWalking.swift in Sources */,
 				B8160BAE28E7242600D9CF9D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -70,7 +70,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.position = CGPoint(x: 12, y: 728)
         scoreLabel.horizontalAlignmentMode = .left
         scoreLabel.text = "Score: 0"
-        scoreLabel.fontColor = .gray
+        scoreLabel.fontColor = .systemGreen
         addChild(scoreLabel)
         
         timerLabel = SKLabelNode(fontNamed: "GillSans-UltraBold")
@@ -105,6 +105,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score -= 30
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "newborn" && duck.xScale == -0.75 {
                     shoot()
@@ -114,6 +115,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score -= 15
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "newborn" && duck.xScale == 1 {
                     shoot()
@@ -123,6 +125,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score -= 10
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "youngling" && duck.xScale == 0.5 {
                     shoot()
@@ -132,6 +135,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score += 3
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "youngling" && duck.xScale == -0.75 {
                     shoot()
@@ -141,6 +145,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score += 2
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "youngling" && duck.xScale == 1 {
                     shoot()
@@ -150,6 +155,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score += 1
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "adult" && duck.xScale == 0.5 {
                     shoot()
@@ -159,6 +165,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score += 10
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "adult" && duck.xScale == -0.75 {
                     shoot()
@@ -168,6 +175,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score += 5
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 } else if duck.name == "adult" && duck.xScale == 1 {
                     shoot()
@@ -177,6 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         }
                         score += 3
                         duck.run(SKAction.fadeOut(withDuration: 0.5))
+                        duck.removeFromParent()
                     }
                 }
             }
@@ -217,7 +226,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         for node in children {
             if node.position.x < 0 || node.position.x > 1024 {
-                node.removeFromParent()
+                if node.name == "youngling" {
+                    score -= 1
+                    node.removeFromParent()
+                } else if node.name == "adult" {
+                    score -= 5
+                    node.removeFromParent()
+                } else if node.name == "newborn" {
+                    node.removeFromParent()
+                }
+                else if node.name == "stick" {
+                    node.removeFromParent()
+                }
             }
         }
         
