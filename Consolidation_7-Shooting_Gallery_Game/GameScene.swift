@@ -65,16 +65,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         thirdRowOfWater.size.width = view.frame.size.width
         addChild(thirdRowOfWater)
         
-        firstThreeBullets = SKSpriteNode(imageNamed: "shots3")
-        firstThreeBullets.zPosition = -2
-        firstThreeBullets.position = CGPoint(x: 974, y: 738)
-        addChild(firstThreeBullets)
-        
-        lastThreeBullets = SKSpriteNode(imageNamed: "shots3")
-        lastThreeBullets.zPosition = -2
-        lastThreeBullets.position = CGPoint(x: 893, y: 738)
-        addChild(lastThreeBullets)
-        
         scoreLabel = SKLabelNode(fontNamed: "GillSans-UltraBold")
         scoreLabel.zPosition = 1
         scoreLabel.position = CGPoint(x: 12, y: 728)
@@ -249,6 +239,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func start() {
+        firstThreeBullets = SKSpriteNode(imageNamed: "shots3")
+        firstThreeBullets.zPosition = -2
+        firstThreeBullets.position = CGPoint(x: 974, y: 738)
+        addChild(firstThreeBullets)
+        
+        lastThreeBullets = SKSpriteNode(imageNamed: "shots3")
+        lastThreeBullets.zPosition = -2
+        lastThreeBullets.position = CGPoint(x: 893, y: 738)
+        addChild(lastThreeBullets)
+        
         gameTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (Timer) in
             if self.timer > 0 {
                 self.timer -= 1
