@@ -10,8 +10,13 @@ import SpriteKit
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var stickNode: SKSpriteNode!
     var duckNode: SKSpriteNode!
+    var firstRowOfWater: SKSpriteNode!
+    var secondRowOfWater: SKSpriteNode!
+    var thirdRowOfWater: SKSpriteNode!
     var scoreLabel: SKLabelNode!
     var timerLabel: SKLabelNode!
+    var firstThreeBullets: SKSpriteNode!
+    var lastThreeBullets: SKSpriteNode!
     var gameOverLabel: SKSpriteNode!
     var restartLabel: SKLabelNode!
     var gameTimer: Timer?
@@ -27,55 +32,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     var numberOfBullets = 6
-    var numberOfTaps = 0
+    var shotsFired = 0 {
+        didSet {
+            numberOfBullets -= 1
+        }
+    }
     var rowNumber = 0
     var timeInterval = 10.0
     var appearTime = 5.0
     
     var isGameOver = false
-    var isShot = false
     
     override func didMove(to view: SKView) {
-        backgroundColor = .white
         
-        let firstRow = SKSpriteNode(imageNamed: "water-bg")
-        firstRow.zPosition = 0
-        firstRow.position = CGPoint(x: 512, y: 128)
-        firstRow.size.width = view.frame.size.width
-        addChild(firstRow)
+        backgroundColor = .systemBackground
         
-        let secondRow = SKSpriteNode(imageNamed: "water-fg")
-        secondRow.zPosition = -1
-        secondRow.position = CGPoint(x: 512, y: 256)
-        secondRow.size.width = view.frame.size.width
-        addChild(secondRow)
+        firstRowOfWater = SKSpriteNode(imageNamed: "water-bg")
+        firstRowOfWater.zPosition = 0
+        firstRowOfWater.position = CGPoint(x: 512, y: 128)
+        firstRowOfWater.size.width = view.frame.size.width
+        addChild(firstRowOfWater)
         
-        /* if Int.random(in: 0...3) == 0 {
-            duckNode.texture = SKTexture(imageNamed: "duck-chick")
-            duckNode.name = "newborn"
-        } else if Int.random(in: 0...3) == 1 {
-            duckNode.texture = SKTexture(imageNamed: "duck-young")
-            duckNode.name = "youngling"
-        } else {
-            duckNode.texture = SKTexture(imageNamed: "duck")
-            duckNode.name = "adult"
-        } */
+        secondRowOfWater = SKSpriteNode(imageNamed: "water-fg")
+        secondRowOfWater.zPosition = -1
+        secondRowOfWater.position = CGPoint(x: 512, y: 256)
+        secondRowOfWater.size.width = view.frame.size.width
+        addChild(secondRowOfWater)
         
-        let thirdRow = SKSpriteNode(imageNamed: "water-bg")
-        thirdRow.zPosition = -2
-        thirdRow.position = CGPoint(x: 512, y: 384)
-        thirdRow.size.width = view.frame.size.width
-        addChild(thirdRow)
+        thirdRowOfWater = SKSpriteNode(imageNamed: "water-bg")
+        thirdRowOfWater.zPosition = -2
+        thirdRowOfWater.position = CGPoint(x: 512, y: 384)
+        thirdRowOfWater.size.width = view.frame.size.width
+        addChild(thirdRowOfWater)
         
-        let firstBullets = SKSpriteNode(imageNamed: "shots3")
-        firstBullets.zPosition = -2
-        firstBullets.position = CGPoint(x: 974, y: 738)
-        addChild(firstBullets)
+        firstThreeBullets = SKSpriteNode(imageNamed: "shots3")
+        firstThreeBullets.zPosition = -2
+        firstThreeBullets.position = CGPoint(x: 974, y: 738)
+        addChild(firstThreeBullets)
         
-        let lastBullets = SKSpriteNode(imageNamed: "shots3")
-        lastBullets.zPosition = -2
-        lastBullets.position = CGPoint(x: 893, y: 738)
-        addChild(lastBullets)
+        lastThreeBullets = SKSpriteNode(imageNamed: "shots3")
+        lastThreeBullets.zPosition = -2
+        lastThreeBullets.position = CGPoint(x: 893, y: 738)
+        addChild(lastThreeBullets)
         
         scoreLabel = SKLabelNode(fontNamed: "GillSans-UltraBold")
         scoreLabel.zPosition = 1
@@ -103,59 +101,105 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let location = touch.location(in: self)
         let objects = nodes(at: location)
         
+        if objects.isEmpty {
+            reload()
+        }
+        
         for duck in objects {
-            if duck.name == "newborn" && duck.xScale == 0.5 {
-                score -= 30
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "newborn" && duck.xScale == -0.75 {
-                score -= 15
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "newborn" && duck.xScale == 1 {
-                score -= 10
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "youngling" && duck.xScale == 0.5 {
-                score += 3
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "youngling" && duck.xScale == -0.75 {
-                score += 2
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "youngling" && duck.xScale == 1 {
-                score += 1
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "adult" && duck.xScale == 0.5 {
-                score += 10
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "adult" && duck.xScale == -0.75 {
-                score += 5
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
-            } else if duck.name == "adult" && duck.xScale == 1 {
-                score += 3
-                numberOfTaps += 1
-                duck.run(SKAction.fadeOut(withDuration: 0.5))
-                run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
+            if shotsFired <= 6 {
+                if duck.name == "newborn" && duck.xScale == 0.5 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score -= 30
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "newborn" && duck.xScale == -0.75 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score -= 15
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "newborn" && duck.xScale == 1 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score -= 10
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "youngling" && duck.xScale == 0.5 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score += 3
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "youngling" && duck.xScale == -0.75 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score += 2
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "youngling" && duck.xScale == 1 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score += 1
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "adult" && duck.xScale == 0.5 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score += 10
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "adult" && duck.xScale == -0.75 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score += 5
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                } else if duck.name == "adult" && duck.xScale == 1 {
+                    shoot()
+                    if shotsFired < 6 || numberOfBullets == 0 {
+                        if numberOfBullets == 0 {
+                            numberOfBullets = -1
+                        }
+                        score += 3
+                        duck.run(SKAction.fadeOut(withDuration: 0.5))
+                    }
+                }
             }
         }
         
         for object in objects {
+            guard isGameOver == true else { continue }
+            
             if object.name == "restart" {
                 score = 0
                 timer = 60
+                shotsFired = 0
+                numberOfBullets = 6
                 isGameOver = false
                 
                 if let gameOverLabel = gameOverLabel {
@@ -171,11 +215,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func shoot() {
+        if shotsFired == 6 {
+            run(SKAction.playSoundFileNamed("empty", waitForCompletion: false))
+        } else if shotsFired < 6 {
+            shotsFired += 1
+            run(SKAction.playSoundFileNamed("shot", waitForCompletion: false))
+        }
+    }
+    
     override func update(_ currentTime: TimeInterval) {
         for node in children {
             if node.position.x < 0 || node.position.x > 1024 {
                 node.removeFromParent()
             }
+        }
+        
+        if numberOfBullets == 6 {
+            firstThreeBullets.texture = SKTexture(imageNamed: "shots3")
+        } else if numberOfBullets == 5 {
+            firstThreeBullets.texture = SKTexture(imageNamed: "shots2")
+        } else if numberOfBullets == 4 {
+            firstThreeBullets.texture = SKTexture(imageNamed: "shots1")
+        } else if numberOfBullets == 3 {
+            firstThreeBullets.texture = SKTexture(imageNamed: "shots0")
+        } else if numberOfBullets == 2 {
+            lastThreeBullets.texture = SKTexture(imageNamed: "shots2")
+        } else if numberOfBullets == 1 {
+            lastThreeBullets.texture = SKTexture(imageNamed: "shots1")
+        } else if numberOfBullets <= 0 {
+            lastThreeBullets.texture = SKTexture(imageNamed: "shots0")
         }
     }
     
@@ -282,6 +351,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             return
         }
+    }
+    
+    func reload() {
+        guard isGameOver == false else { return }
+        
+        lastThreeBullets.texture = SKTexture(imageNamed: "shots3")
+        firstThreeBullets.texture = SKTexture(imageNamed: "shots3")
+        
+        run(SKAction.playSoundFileNamed("reload", waitForCompletion: true))
+        
+        shotsFired = 0
+        numberOfBullets = 6
     }
     
     func gameOver() {
